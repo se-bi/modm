@@ -186,6 +186,7 @@ sendMailbox(const modm::can::Message& message, uint32_t mailboxId)
 	mailbox->TIR |= CAN_TI0R_TXRQ;
 }
 
+%% if options["interrupt.isr"]
 // ----------------------------------------------------------------------------
 // Low level function to receive a message from mailbox.
 // Called by Rx Interrupt or by getMessage.
@@ -301,6 +302,7 @@ MODM_ISR({{ reg }}_RX1)
 	}
 %% endif
 }
+%% endif
 
 %% if target["family"] == "f0"
 // On stm32f0, ST has decided to use only one interrupt vector for all
