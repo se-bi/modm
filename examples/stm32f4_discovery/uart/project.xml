@@ -7,5 +7,6 @@
     <module>modm:platform:gpio</module>
     <module>modm:platform:uart:2</module>
     <module>modm:build:scons</module>
+    <module>modm:debug</module>
   </modules>
 </library>

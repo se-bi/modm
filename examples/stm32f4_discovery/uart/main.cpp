@@ -16,6 +16,21 @@
 #include <modm/board.hpp>
 using namespace modm::literals;
 
+#include <modm/debug/logger.hpp>
+
+// Create an IODeviceWrapper around the Uart Peripheral we want to use
+modm::IODeviceWrapper< modm::platform::Usart2, modm::IOBuffer::DiscardIfFull > loggerDevice;
+
+// Set all four logger streams to use the UART
+modm::log::Logger modm::log::debug(loggerDevice);
+modm::log::Logger modm::log::info(loggerDevice);
+modm::log::Logger modm::log::warning(loggerDevice);
+modm::log::Logger modm::log::error(loggerDevice);
+
+// Set the log level
+#undef  MODM_LOG_LEVEL
+#define MODM_LOG_LEVEL modm::log::DEBUG
+
 // ----------------------------------------------------------------------------
 /**
  * Very basic example of USART usage.
@@ -32,6 +47,14 @@ main()
 	// Enable USART 2
 	Usart2::connect<GpioA2::Tx>();
 	Usart2::initialize<Board::SystemClock, 9600_Bd>();
+
+	MODM_LOG_INFO << "Hello" << modm::endl;
+	MODM_LOG_INFO << "Core Freq.: "   << Board::SystemClock::Frequency / 1e6 << " MHz" << modm::endl;
+	MODM_LOG_INFO << "Ahb Freq.:  "   << Board::SystemClock::Ahb       / 1e6 << " MHz" << modm::endl;
+	MODM_LOG_INFO << "Apb1 Freq.: "   << Board::SystemClock::Apb1      / 1e6 << " MHz" << modm::endl;
+	MODM_LOG_INFO << "Apb2 Freq.: "   << Board::SystemClock::Apb2      / 1e6 << " MHz" << modm::endl;
+	MODM_LOG_INFO << "Timer1 Freq.: " << Board::SystemClock::Timer1    / 1e6 << " MHz" << modm::endl;
+	MODM_LOG_INFO << "Timer2 Freq.: " << Board::SystemClock::Timer2    / 1e6 << " MHz" << modm::endl;
 
 	while (true)
 	{
