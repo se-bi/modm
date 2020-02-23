@@ -16,6 +16,11 @@
 #include <modm/board.hpp>
 using namespace modm::literals;
 
+#include <modm/debug/logger.hpp>
+
+modm::IODeviceWrapper< modm::platform::Usart2, modm::IOBuffer::DiscardIfFull > extLogDevice;
+modm::log::Logger extLogger(extLogDevice);
+
 // Set the log level
 #undef  MODM_LOG_LEVEL
 #define MODM_LOG_LEVEL modm::log::DEBUG
@@ -33,20 +38,24 @@ main()
 
 	Board::LedRed::set();
 
-	MODM_LOG_INFO << "Hello" << modm::endl;
-	MODM_LOG_INFO << "Core Freq.: "   << Board::SystemClock::Frequency / 1e6 << " MHz" << modm::endl;
-//	MODM_LOG_INFO << "Ahb Freq.:  "   << Board::SystemClock::Ahb       / 1e6 << " MHz" << modm::endl;
-	MODM_LOG_INFO << "Apb1 Freq.: "   << Board::SystemClock::Apb1      / 1e6 << " MHz" << modm::endl;
-	MODM_LOG_INFO << "Apb2 Freq.: "   << Board::SystemClock::Apb2      / 1e6 << " MHz" << modm::endl;
-	MODM_LOG_INFO << "Timer1 Freq.: " << Board::SystemClock::Timer1    / 1e6 << " MHz" << modm::endl;
-	MODM_LOG_INFO << "Timer2 Freq.: " << Board::SystemClock::Timer2    / 1e6 << " MHz" << modm::endl;
+	// Enable USART 2
+	Usart2::connect<GpioA2::Tx>();
+	Usart2::initialize<Board::SystemClock, 9600_Bd>();
+
+	extLogger << "Hello" << modm::endl;
+	extLogger << "Core Freq.: "   << Board::SystemClock::Frequency / 1e6 << " MHz" << modm::endl;
+//	extLogger << "Ahb Freq.:  "   << Board::SystemClock::Ahb       / 1e6 << " MHz" << modm::endl;
+	extLogger << "Apb1 Freq.: "   << Board::SystemClock::Apb1      / 1e6 << " MHz" << modm::endl;
+	extLogger << "Apb2 Freq.: "   << Board::SystemClock::Apb2      / 1e6 << " MHz" << modm::endl;
+	extLogger << "Timer1 Freq.: " << Board::SystemClock::Timer1    / 1e6 << " MHz" << modm::endl;
+	extLogger << "Timer2 Freq.: " << Board::SystemClock::Timer2    / 1e6 << " MHz" << modm::endl;
 
 	while (true)
 	{
 		static uint8_t c = 'A';
 		Board::LedRed::toggle();
 		Board::LedGreen::toggle();
-		Board::stlink::Uart::write(c);
+		extLogDevice.write(c);
 		++c;
 		if (c > 'Z') {
 			c = 'A';
