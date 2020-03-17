@@ -21,7 +21,7 @@ int
 main()
 {
 	Board::initialize();
-	LedD13::setOutput(modm::Gpio::Low);
+	Leds::setOutput();
 
 	// Use the logging streams to print some messages.
 	// Change MODM_LOG_LEVEL above to enable or disable these messages
@@ -34,18 +34,8 @@ main()
 
 	while (true)
 	{
-		LedGreen::toggle();
-		modm::delayMilliseconds(Button::read() ? 125 : 500);
-
-		LedOrange::toggle();
-		modm::delayMilliseconds(Button::read() ? 125 : 500);
-
-		LedRed::toggle();
-		modm::delayMilliseconds(Button::read() ? 125 : 500);
-
-		LedBlue::toggle();
-		modm::delayMilliseconds(Button::read() ? 125 : 500);
-		LedD13::toggle();
+		Leds::write(1 << (counter % (Leds::width+1) ));
+		modm::delayMilliseconds(Button::read() ? 100 : 500);
 
 		MODM_LOG_INFO << "loop: " << counter++ << modm::endl;
 	}

@@ -135,7 +135,7 @@ using LedBlue   = GpioInverted<GpioOutputK3>;		// LED4 [Blue]
 using LedUsb    = GpioInverted<GpioOutputB7>;		// LED5 [Red] USB Overcurrent
 using LedD13    = GpioOutputD3;							// LED7 [Green]
 
-using Leds = SoftwareGpioPort< LedBlue, LedRed, LedOrange, LedGreen >;
+using Leds = SoftwareGpioPort< LedBlue, LedRed, LedOrange, LedGreen, D8, D9, D10, D11, D12 >;
 
 using DisplayReset = GpioOutputH7;
 

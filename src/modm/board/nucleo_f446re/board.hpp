@@ -97,7 +97,7 @@ struct SystemClock {
 using Button = GpioInverted<GpioInputC13>;
 using LedD13 = D13;
 
-using Leds = SoftwareGpioPort< LedD13 >;
+using Leds = SoftwareGpioPort< LedD13, D8, D9, D10, D11, D12 >;
 
 
 namespace stlink
