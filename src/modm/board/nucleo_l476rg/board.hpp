@@ -27,8 +27,8 @@ namespace Board
 {
 	using namespace modm::literals;
 
-/// STM32L4 running at 48MHz generated from the
-/// internal Multispeed oscillator
+/// STM32L4 running at 80MHz generated from the
+/// internal 16MHz oscillator
 
 // Dummy clock for devices
 struct SystemClock {
@@ -58,9 +58,23 @@ struct SystemClock {
 	static bool inline
 	enable()
 	{
-		// set flash latency first because system already runs from MSI
+		// enable internal 16 MHz HSI RC clock
+		Rcc::enableInternalClock();
+		Rcc::enablePll(
+			Rcc::PllSource::InternalClock,
+			1,	// 16MHz  / M=1  -> 16MHz
+			10,	// 16MHz  * N=10 -> 160MHz
+			2	// 160MHz / R=2  -> 80MHz = F_cpu
+		);
 		Rcc::setFlashLatency<Frequency>();
-		Rcc::enableMultiSpeedInternalClock(Rcc::MsiFrequency::MHz48);
+
+		// switch system clock to PLL output
+		Rcc::enableSystemClock(Rcc::SystemClockSource::Pll);
+		Rcc::setAhbPrescaler(Rcc::AhbPrescaler::Div1);
+		// APB1 has max. 80MHz
+		Rcc::setApb1Prescaler(Rcc::Apb1Prescaler::Div1);
+		Rcc::setApb2Prescaler(Rcc::Apb2Prescaler::Div1);
+		// update frequencies for busy-wait delay functions
 		Rcc::updateCoreFrequency<Frequency>();
 
 		return true;
