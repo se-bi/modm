@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------
 
 #include <modm/board.hpp>
+#include <modm/architecture/interface/assert.hpp>
 #include <string>
 
 using namespace std::string_literals;
