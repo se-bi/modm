@@ -1,0 +1,9 @@
+<library>
+  <extends>modm:nucleo-f446re</extends>
+  <options>
+    <option name="modm:build:build.path">../../../build/nucleo_f446re/assert</option>
+  </options>
+  <modules>
+    <module>modm:build:scons</module>
+  </modules>
+</library>
